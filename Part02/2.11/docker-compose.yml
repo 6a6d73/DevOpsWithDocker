@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  python-dev-env:
+    build: .
+    command: python3 -m flask run --host=0.0.0.0
+    ports:
+      - 5000:5000
+    container_name: python-rest-server
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    volumes:
+      - ./:/app:Z
