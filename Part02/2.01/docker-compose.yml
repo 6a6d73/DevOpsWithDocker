@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  2.1-docker-compose-logs:
+    image: docker.io/devopsdockeruh/simple-web-service
+    volumes:
+      - ./text.log:/usr/src/app/text.log:Z
+    container_name: 2.1-logs
