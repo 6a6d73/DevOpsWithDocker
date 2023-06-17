@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: 2.4-frontend
+    build: ./frontend
+    ports:
+      - 5000:5000
+    container_name: frontend
+  backend:
+    image: 2.4-backend
+    build: ./backend
+    ports:
+      - 8080:8080
+    container_name: backend
+    environment:
+      - REDIS_HOST=cache
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=devops
+      - POSTGRES_PASSWORD=devops_passwd
+      - POSTGRES_DATABASE=messages
+    depends_on:
+      - db
+  cache:
+    image: docker.io/library/redis:7.0
+    container_name: redis
+  db:
+    image: postgres:15.3-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=devops
+      - POSTGRES_PASSWORD=devops_passwd
+      - POSTGRES_DB=messages
+    container_name: db
+  reverse_proxy:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:Z
+    container_name: reverse_proxy
+    depends_on:
+      - backend
+      - frontend
